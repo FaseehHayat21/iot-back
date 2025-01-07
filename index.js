@@ -3,7 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://faseeh:faseeh%40210663@handsanitizer.p1w5a.mongodb.net/';
 
 app.use(cors());

@@ -11,10 +11,6 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log("Connected to MongoDB"))
 .catch(err => console.error("MongoDB connection error:", err));
 
-
-// Create a model for the schema
-const Location = mongoose.model("Location", LocationSchema);
-
 // Initialize Express
 const app = express();
 app.use(cors());

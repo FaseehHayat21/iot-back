@@ -127,7 +127,7 @@ const mongoose = require('mongoose');
 const app = express();
 
 // MongoDB URI
-const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://faseeh:faseeh%40210663@handsanitizer.p1w5a.mongodb.net/';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://faseeh:faseeh@210663@handsanitizer.p1w5a.mongodb.net/';
 
 app.use(cors());
 app.use(express.json());

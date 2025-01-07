@@ -3,17 +3,16 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const app = express();
-const PORT = process.env.PORT;
-const MONGO_URI = 'mongodb+srv://faseeh:faseeh%40210663@handsanitizer.p1w5a.mongodb.net/';
+const PORT = process.env.PORT || 5001;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://faseeh:faseeh%40210663@handsanitizer.p1w5a.mongodb.net/';
 
 app.use(cors());
 app.use(express.json());
-
-// Connect to MongoDB
-mongoose.connect(MONGO_URI, { useNewUrlParser: true })
-.then(() => console.log('Connected to MongoDB'))
-.catch((error) => console.error('Error connecting to MongoDB:', error));
-
+// Connect to MongoDB (removed useNewUrlParser and useUnifiedTopology options)
+mongoose
+  .connect(MONGO_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((error) => console.error('Error connecting to MongoDB:', error));
 // Device Schema and Model
 const deviceSchema = new mongoose.Schema({
   deviceId: { type: String, required: true, unique: true },

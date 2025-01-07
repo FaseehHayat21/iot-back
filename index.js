@@ -3,15 +3,16 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const app = express();
-const MONGO_URI = 'mongodb+srv://faseeh:faseeh%40210663@handsanitizer.p1w5a.mongodb.net/';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://faseeh:faseeh%40210663@handsanitizer.p1w5a.mongodb.net/';
 
 app.use(cors());
 app.use(express.json());
-// Connect to MongoDB (removed useNewUrlParser and useUnifiedTopology options)
+
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('Error connecting to MongoDB:', error));
+
 // Device Schema and Model
 const deviceSchema = new mongoose.Schema({
   deviceId: { type: String, required: true, unique: true },
@@ -30,8 +31,6 @@ const alertSchema = new mongoose.Schema({
 const Alert = mongoose.model('Alert', alertSchema);
 
 // Routes
-
-// Get number of devices
 app.get('/devices', async (req, res) => {
   try {
     const devices = await Device.find();
@@ -41,7 +40,6 @@ app.get('/devices', async (req, res) => {
   }
 });
 
-// Add or Update device
 app.post('/devices', async (req, res) => {
   try {
     const { deviceId, deviceLocation, status } = req.body;
@@ -51,13 +49,11 @@ app.post('/devices', async (req, res) => {
 
     let device = await Device.findOne({ deviceId });
     if (device) {
-      // If device exists, update its status
       device.deviceLocation = deviceLocation;
       device.status = status;
       await device.save();
       res.status(200).json({ message: 'Device updated successfully', device });
     } else {
-      // If device doesn't exist, create new
       device = new Device({ deviceId, deviceLocation, status });
       await device.save();
       res.status(201).json({ message: 'Device added successfully', device });
@@ -71,32 +67,7 @@ app.post('/devices', async (req, res) => {
   }
 });
 
-// Get alerts
-app.get('/alerts', async (req, res) => {
-  try {
-    const alerts = await Alert.find();
-    res.json(alerts);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching alerts' });
-  }
-});
-
-// Add a new alert (For refill alert)
-app.post('/alerts', async (req, res) => {
-  try {
-    const { message } = req.body;
-    if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
-    }
-    const alert = new Alert({ message });
-    await alert.save();
-    res.status(201).json({ message: 'Alert added successfully', alert });
-  } catch (error) {
-    res.status(500).json({ error: 'Error adding alert' });
-  }
-});
-
-// Refill Alert - Endpoint for when PIR detects more than 4 activations
+// Refill Alert
 app.post('/alerts/refill', async (req, res) => {
   try {
     const { deviceId, message } = req.body;
@@ -113,9 +84,4 @@ app.post('/alerts/refill', async (req, res) => {
   }
 });
 
-// Start server
-const PORT =  3000;  // Use Vercel's PORT environment variable or default to 5001
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app;  // Export the app instead of calling app.listen()
